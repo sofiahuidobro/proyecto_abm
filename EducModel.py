@@ -1,14 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
 
 #Proyecto de retornos a la educación
 #Autores: Alejandro Arellano Best, Joaquín Fosado, Ricardo Carpio y Sofía Huidobro
-
-
-# In[ ]:
 
 
 #Dado que estamos corriendo el modelo en Notebook, primero se tiene que definir el modelo con la definición de los agentes y luego el del entorno. 
@@ -17,32 +12,19 @@
 
 # # Espacio para agentes
 
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
 
 
 # # Espacio para entorno
 
+
+
+
+
+
 # Definición del grid
-
-# In[2]:
-
-
 from mesa.visualization.modules import CanvasGrid
 from mesa.visualization.ModularVisualization import ModularServer 
 from model import EducModel
-
-
-# In[6]:
-
 
 def agent_portrayal(agent):
     portrayal = {"Shape": "circle",
@@ -52,15 +34,7 @@ def agent_portrayal(agent):
         "r": 0.5}
     return portrayal
 
-
-# In[8]:
-
-
 grid = CanvasGrid(agent_portrayal, 7, 7, 500, 500)
-
-
-# In[9]:
-
 
 server = ModularServer(EducModel,
     [grid],
@@ -69,12 +43,7 @@ server = ModularServer(EducModel,
 server.port = 8521
 server.launch()
 
-
 # Incorporar agentes al grid
-
-# In[12]:
-
-
 def agent_portrayal(agent):
     portrayal = {"Shape": "circle",
         "Filled": "true",
@@ -90,15 +59,7 @@ def agent_portrayal(agent):
         portrayal["r"] = 0.2
     return portrayal
 
-
-# In[ ]:
-
-
 from mesa.visualization.modules import ChartModule
-
-
-# In[ ]:
-
 
 
 
