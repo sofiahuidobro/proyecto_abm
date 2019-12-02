@@ -16,9 +16,9 @@ class Agente(Agent):
     ##Inicialización del agente.
     def __init__(self,unique_id,model):
         super().__init__(unique_id,model)
-        self.salario=self.random.randint(-1,1)
-        self.salario_esperado=0
-        self.educado=False
+        self.salario=self.random.randint(0,0.25)
+        self.salario_esperado=0 #¿debería ser 1?
+        self.educado=False #randomizar para la inicialización
         self.primera_generacion=True
         self.sumUneducated=0
         self.sumEducatedSkilled=0
@@ -54,9 +54,10 @@ class Agente(Agent):
         #Agente joven.
         else:
         #Obtención de información acerca del tipo de agente del entorno usando len(vecinos)>0.
-        vecinos=self.model.grid.get_neighbors(self.pos,moore=True,include_center=True,radius=0)
-        UneducatedNeighbors=[x for x in vecinos if type(x) is Uneducated and x!=self]
-        EducatedSkilledNeighbors=[x for x in vecinos if type(x) is EducatedSkilled and x!=self]
+            vecinos=self.model.grid.get_neighbors(self.pos,moore=True,include_center=True,radius=0)
+            UneducatedNeighbors=[x for x in vecinos if type(x) is Uneducated and x!=self]
+            EducatedSkilledNeighbors=[x for x in vecinos if type(x) is EducatedSkilled and x!=self]
+            #falta cálculo de los educados sin trabajo calificado, linea 58 y 62
         if len(UneducatedNeighbors)>0:
             self.sumUneducated=-1*len(UneducatedNeighbors)
         else:
@@ -81,7 +82,7 @@ class Agente(Agent):
             self.model.grid.place_agent(c,self)
         #Caso educarse: paga por la educación.
         else:
-            self.salario-=0.25
+            self.salario-=0.25 #no debería de ser costo?
         #Se falsea la primera generación.
         self.primera_generacion=False     
 
