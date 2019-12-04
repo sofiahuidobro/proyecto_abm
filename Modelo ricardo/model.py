@@ -16,7 +16,6 @@ class Agente(Agent):
     ##Inicialización del agente.
     def __init__(self,unique_id,model):
         super().__init__(unique_id,model)
-        #REVISAR
         self.salario=self.random.randint(-1,1)
         if self.salario==-1:
             self.color="red"
@@ -27,6 +26,8 @@ class Agente(Agent):
         self.salario_esperado=0 #¿debería ser 1?
         self.educado=False #randomizar para la inicialización
         self.primera_generacion=True
+        self.educarse = True
+        self.pos = [0,0]
     ##Reglas de comportamiento.
     def step(self):
         #Agente viejo.
