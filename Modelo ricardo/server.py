@@ -5,12 +5,22 @@ from mesa.visualization.modules import ChartModule
 from mesa.visualization.ModularVisualization import ModularServer
 from mesa.visualization.UserParam import UserSettableParameter
 
+def definirColor(educarse,empleo_calificado){
+    if educarse==False:
+        return "yellow"
+    else:
+        if empleo_calificado==False:
+            return "red"
+        else:
+            return "green"
+}
+
 #portrayal. dictionary de Python para la definición del diseño de los agentes:
 def portrayal(agent):    
     portrayal = {"Shape": "rect",
                  "Filled": "true",
                  "Layer": 1,
-                 "Color": agent.color,
+                 "Color": definirColor(agent.educarse,agent.empleo_calificado),
                  "text": agent.unique_id,
                  "text_color": "white",
                  "h":1.00

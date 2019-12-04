@@ -16,12 +16,17 @@ class Agente(Agent):
     ##Inicialización del agente.
     def __init__(self,unique_id,model):
         super().__init__(unique_id,model)
-        self.salario=self.random.randint(0,0.25)
+        #REVISAR
+        self.salario=self.random.randint(-1,1)
+        if self.salario==-1:
+            self.color="red"
+        elif self.salario==0:
+            self.color="yellow"
+        else:
+            self.color="green"
         self.salario_esperado=0 #¿debería ser 1?
         self.educado=False #randomizar para la inicialización
         self.primera_generacion=True
-        self.sumUneducated=0
-        self.sumEducatedSkilled=0
     ##Reglas de comportamiento.
     def step(self):
         #Agente viejo.
@@ -29,6 +34,7 @@ class Agente(Agent):
             #Caso no educado.
             if self.educarse==False:
                 self.salario+=1
+                self.color="yellow"
             #Caso educado.
             else:
                 #Proceso que asigna trabajos calificados y no calificados:
@@ -40,34 +46,18 @@ class Agente(Agent):
                 #Caso agente con estudios y trabajo no calificado.
                 if self.empleo_calificado==False:
                     self.salario+=1
-                    #Esta sección cambia el tipo que tenga el agente en el grid a uno EducatedUnskilled.
-                    self.model.grid.remove_agent(self)
-                    c=EducatedUnskilled(unique_id,model)
-                    self.model.grid.place_agent(c,self)
+                    self.color="red"
                 #Caso agente con estudios y trabajo calificado.
                 else:
                     self.salario+=2.5
-                    #Esta sección cambia el tipo que tenga el agente en el grid a uno EducatedSkilled.
-                    self.model.grid.remove_agent(self)
-                    c=EducatedSkilled(unique_id,model)
-                    self.model.grid.place_agent(c,self)
+                    self.color="green"
         #Agente joven.
-        else:
-        #Obtención de información acerca del tipo de agente del entorno usando len(vecinos)>0.
-            vecinos=self.model.grid.get_neighbors(self.pos,moore=True,include_center=True,radius=0)
-            UneducatedNeighbors=[x for x in vecinos if type(x) is Uneducated and x!=self]
-            EducatedSkilledNeighbors=[x for x in vecinos if type(x) is EducatedSkilled and x!=self]
-            #falta cálculo de los educados sin trabajo calificado, linea 58 y 62
-        if len(UneducatedNeighbors)>0:
-            self.sumUneducated=-1*len(UneducatedNeighbors)
-        else:
-            self.sumUneducated=0
-        if len(EducatedSkilledNeighbors)>0:
-            self.sumEducatedSkilled=1*len(EducatedSkilledNeighbors)
-        else:
-            self.sumEducatedSkilled=0
         #Cálculo del salario esperado.
-        self.salario_esperado=self.sumUneducated+self.sumEducatedSkilled
+        vecinos=self.model.grid.get_neighbors(self.pos,moore=True,include_center=False)
+        suma=0
+        for v in vecinos:
+            suma+=v.salario
+        self.salario_esperado=suma/len(vecinos)       
         #Selección de estrategia: estudiar o trabajar.
         if self.salario<=self.salario_esperado:
             self.educarse=True
@@ -76,76 +66,47 @@ class Agente(Agent):
         #Caso no educarse: recibe trabajo no calificado.
         if self.educarse==False:
             self.salario+=1
-            #Esta sección cambia el tipo que tenga el agente en el grid a uno Uneducated.
-            self.model.grid.remove_agent(self)
-            c=Uneducated(unique_id,model)
-            self.model.grid.place_agent(c,self)
+            self.color="yellow"
         #Caso educarse: paga por la educación.
         else:
-            self.salario-=0.25 #no debería de ser costo?
+            self.salario-=0.25 
         #Se falsea la primera generación.
         self.primera_generacion=False     
-
-class Uneducated(Agent):
-    def __init__(self,unique_id,model):
-        super().__init__(unique_id,model)
-        color = "red"
-        self.color = color
-
-class EducatedUnskilled(Agent):
-    def __init__(self,unique_id,model):
-        super().__init__(unique_id,model)
-        color = "yellow"
-        self.color = color
-
-class EducatedSkilled(Agent):
-    def __init__(self,unique_id,model):
-        super().__init__(unique_id,model)
-        color = "green"
-        self.color = color
     
 ##Métodos del modelo.
-#AVISO: ¡REPROGRAMAR!
-#def contarAgentes(model):
-#    return model.schedule.steps  
-#def getCurrentTick(model):
-#    return model.schedule.get_agent_count()      
+def contarAgentes(model):
+    return model.schedule.steps  
+
+def getCurrentTick(model):
+    return model.schedule.get_agent_count()      
      
-###MODELO
+###MODELO.
 class HumanCapital(Model):
     ##Inicialización del modelo.
     def __init__(self,N,seed=None):
         self.current_id=0
         self.running = True
+        self.width=7
+        self.height=7
         # Definimos el schedule para hacer la ejecucion en orden aleatorio
         self.schedule = RandomActivation(self)
         #Definimos el grid de tamanio 7x7 y sin fronteras flexibles
-        self.grid = MultiGrid(7,7,False)
+        self.grid = MultiGrid(self.width,self.height,False)
         ##Declaración del grid.
-        for y in range(0,height):
-            for x in range(0,width):
+        for y in range(0,self.height):
+            for x in range(0,self.width):
                 a=Agente(self.next_id(),self)
                 self.schedule.add(a)
                 self.grid.place_agent(a, [x,y])
-                #Asignación de tipo de Agente en el grid.
-                if self.schedule.salario(i)==-1:
-                    b=Uneducated(self.next_id(),self)
-                elif self.schedule.salario(i)==0:
-                    b=EducatedUnskilled(self.next_id(),self)
-                elif self.schedule.salario(i)==1:
-                    b=EducatedSkilled(self.next_id(),self)
-                self.grid.place_agent(b,[x,y])
-
-        ##AVISO: ¡REPROGRAMAR!
-        #self.datacollector = DataCollector(
-        #    model_reporters={"Nagentes": contarAgentes,"NumberTicks":getCurrentTick})
+        self.datacollector = DataCollector(
+            model_reporters={"Nagentes": contarAgentes,"NumberTicks":getCurrentTick})
         
     ##Itinerario.    
     def step(self):
         #Ejecutar el step de los agentes.
         self.schedule.step()
-        #AVISO: ¡REPROGRAMAR!
-        #self.datacollector.collect(self)
+        #Ejecutar el datacollector
+        self.datacollector.collect(self)
         
         # Esta sección indica a model cuando detenerse. En el caso del modelo de
         # capital humano, no habría un parámetro de temrinación definido. Discutir.
