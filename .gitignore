@@ -1,2 +1,7 @@
 
 retornos a la educacion.ipynb
+.project
+.pydevproject
+.settings/org.eclipse.core.resources.prefs
+Modelo ricardo/__pycache__/model.cpython-37.pyc
+Modelo ricardo/__pycache__/server.cpython-37.pyc

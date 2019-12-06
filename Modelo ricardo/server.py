@@ -27,10 +27,11 @@ def portrayal(agent):
                  "w":1.00}
     return portrayal
 
-grid = CanvasGrid(portrayal,10,10,500,500)
+
+grid = CanvasGrid(portrayal,7,7,500,500)
 chart = ChartModule([{"Label":"Nagentes","Color":"red"}],data_collector_name="datacollector")
 
 server = ModularServer(HumanCapital,
                        [grid,chart],
                        "Nuestro segundo modelo",
-                       {"N":UserSettableParameter('slider',"Numero de agentes",5,1,50,1)})  
+                       {"N_buenos_empleo":UserSettableParameter('slider',"Numero de buenos empleos",5,1,50,1)})  

@@ -28,6 +28,7 @@ class Agente(Agent):
         self.primera_generacion=True
         self.educarse = True
         self.pos = [0,0]
+        self.empleo_calificado = False #[FLORIAN]: aqui hay que pensar a quien dar el empleo calificado al inicio
     ##Reglas de comportamiento.
     def step(self):
         #Agente viejo.
@@ -75,16 +76,23 @@ class Agente(Agent):
         self.primera_generacion=False     
     
 ##Métodos del modelo.
-def contarAgentes(model):
-    return model.schedule.steps  
+def contarAgentes2(model):
+    return model.schedule.get_agent_count()    
+
+def contarAgentes(model): #CAMBIAR EL NOMBRE Y HACERLO PARA LOS OTROS TIPOS
+    n = 0
+    for i in model.schedule.agents:
+        if i.empleo_calificado==True:
+            n +=1
+    return n  
 
 def getCurrentTick(model):
-    return model.schedule.get_agent_count()      
+    return model.schedule.steps  
      
 ###MODELO.
 class HumanCapital(Model):
     ##Inicialización del modelo.
-    def __init__(self,N,seed=None):
+    def __init__(self,N_buenos_empleo,seed=None):
         self.current_id=0
         self.running = True
         self.width=7
