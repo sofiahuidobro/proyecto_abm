@@ -23,15 +23,16 @@ class Agente(Agent):
             self.color="yellow"
         else:
             self.color="green"
-        self.salario_esperado=0 #¿debería ser 1?
-        self.educado=False #randomizar para la inicialización
+        self.salario_esperado=1 #¿debería ser 1?
+        self.educado=self.random.choice([True, False]) #randomizar para la inicialización
         self.primera_generacion=True
         self.educarse = True
         self.pos = [0,0]
-        self.empleo_calificado = False #[FLORIAN]: aqui hay que pensar a quien dar el empleo calificado al inicio
+        self.empleo_calificado = self.random.choice([True, False]) #[FLORIAN]: aqui hay que pensar a quien dar el empleo calificado al inicio
     ##Reglas de comportamiento.
     def step(self):
         #Agente viejo.
+        print("viejo")
         if self.primera_generacion==False:
             #Caso no educado.
             if self.educarse==False:
@@ -41,40 +42,37 @@ class Agente(Agent):
             else:
                 #Proceso que asigna trabajos calificados y no calificados:
                 ParamProb=self.random.randint(0,9)
+                #Caso agente con estudios y trabajo no calificado.
                 if ParamProb<=6:
                     self.empleo_calificado=False
-                else:
-                    self.empleo_calificado=True
-                #Caso agente con estudios y trabajo no calificado.
-                if self.empleo_calificado==False:
                     self.salario+=1
                     self.color="red"
                 #Caso agente con estudios y trabajo calificado.
                 else:
+                    self.empleo_calificado=True
                     self.salario+=2.5
                     self.color="green"
         #Agente joven.
-        #Cálculo del salario esperado.
-        vecinos=self.model.grid.get_neighbors(self.pos,moore=True,include_center=False)
-        suma=0
-        for v in vecinos:
-            suma+=v.salario
-        self.salario_esperado=suma/len(vecinos)       
-        #Selección de estrategia: estudiar o trabajar.
-        if self.salario<=self.salario_esperado:
-            self.educarse=True
         else:
-            self.educarse=False
-        #Caso no educarse: recibe trabajo no calificado.
-        if self.educarse==False:
-            self.salario+=1
-            self.color="yellow"
-        #Caso educarse: paga por la educación.
-        else:
-            self.salario-=0.25 
-        #Se falsea la primera generación.
-        self.primera_generacion=False     
-    
+            print("joven")
+            #Cálculo del salario esperado.
+            vecinos=self.model.grid.get_neighbors(self.pos,moore=True,include_center=False)
+            suma=0
+            for v in vecinos:
+                suma+=v.salario
+                self.salario_esperado=suma/len(vecinos)
+            #Caso educarse: paga por la educación.
+            if self.salario<=self.salario_esperado:
+                self.educarse=True
+                self.salario-=0.25 
+            #Caso no educarse: recibe trabajo no calificado.
+            else:
+                self.educarse=False
+                self.salario+=1
+                self.color="yellow"
+            #Se falsea la primera generación.
+            self.primera_generacion=False
+
 ##Métodos del modelo.
 def contarAgentes2(model):
     return model.schedule.get_agent_count()    
@@ -84,7 +82,7 @@ def contarAgentes(model): #CAMBIAR EL NOMBRE Y HACERLO PARA LOS OTROS TIPOS
     for i in model.schedule.agents:
         if i.empleo_calificado==True:
             n +=1
-    return n  
+    return n
 
 def getCurrentTick(model):
     return model.schedule.steps  
