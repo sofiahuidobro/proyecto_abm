@@ -24,16 +24,23 @@ class Agente(Agent):
         else:
             self.color="green"
         self.salario_esperado=1 #¿debería ser 1?
-        self.educado=self.random.choice([True, False]) #randomizar para la inicialización
         self.primera_generacion=True
         self.educarse = True
         self.pos = [0,0]
-        self.empleo_calificado = self.random.choice([True, False]) #[FLORIAN]: aqui hay que pensar a quien dar el empleo calificado al inicio
+        if self.random.randint(0,49) < 20:
+            self.educado = True
+            if self.random.randint (0,49) < 10:
+                self.empleo_calificado = True
+            else:
+                self.empleo_calificado = False
+        else:
+            self.educado = False
+            self.empleo_calificado = False
     ##Reglas de comportamiento.
     def step(self):
         #Agente viejo.
-        print("viejo")
         if self.primera_generacion==False:
+            print("viejo")
             #Caso no educado.
             if self.educarse==False:
                 self.salario+=1
