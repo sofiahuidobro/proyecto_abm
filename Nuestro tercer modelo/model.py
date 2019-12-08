@@ -18,8 +18,9 @@ class Agente(Agent):
         self.salario= self.random.random()
         self.educarse = True
         self.pos = [0,0]
-        if self.random.randint(0,49) < 25:
-            self.educado = True
+        #Aleatorización inicial de educación y trabajo calificado
+        if self.random.randint(0,49) < 20:
+            self.educarse = True
             if self.random.randint (0,49) < 10:
                 self.empleo_calificado = True
                 self.señal = 1
@@ -27,7 +28,7 @@ class Agente(Agent):
                 self.empleo_calificado = False
                 self.señal = -1
         else:
-            self.educado = False
+            self.educarse = False
             self.empleo_calificado = False
             self.señal = 0
     ##Reglas de comportamiento.
@@ -60,25 +61,32 @@ class Agente(Agent):
 
 ##Métodos del modelo.
 def contarAgentes2(model):
-    return model.schedule.get_agent_count()    
+    return model.schedule.get_agent_count()
 
-def contarAgentesCal(model): #CAMBIAR EL NOMBRE Y HACERLO PARA LOS OTROS TIPOS
+def contarAgentesCal(model): #Contar agentes con empleo calificado
     n = 0
     for i in model.schedule.agents:
         if i.empleo_calificado==True:
             n +=1
     return n
 
-def contarAgentesEdu(model): #CAMBIAR EL NOMBRE Y HACERLO PARA LOS OTROS TIPOS
+def contarAgentesEdu(model): #Contar agentes educados
     n = 0
     for i in model.schedule.agents:
         if i.educarse==True:
             n +=1
     return n
 
+def contarAgentesNoEdu(model): #Contar agentes no educados
+    n = 0
+    for i in model.schedule.agents:
+        if i.educarse==False:
+            n +=1
+    return n
+
 def getCurrentTick(model):
-    return model.schedule.steps  
-     
+    return model.schedule.steps
+
 ###MODELO.
 class HumanCapital(Model):
     ##Inicialización del modelo.
@@ -98,7 +106,7 @@ class HumanCapital(Model):
                 self.schedule.add(a)
                 self.grid.place_agent(a, [x,y])
         self.datacollector = DataCollector(
-            model_reporters={"Empleo_cal": contarAgentesCal,"NumberTicks":getCurrentTick})
+            model_reporters={"Empleo calificado": contarAgentesCal,"NumberTicks":getCurrentTick, "Educados": contarAgentesEdu, "No educados":contarAgentesNoEdu})
         
     ##Itinerario.    
     def step(self):

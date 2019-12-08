@@ -29,7 +29,7 @@ def portrayal(agent):
 
 
 grid = CanvasGrid(portrayal,7,7,500,500)
-chart = ChartModule([{"Label":"Nagentes","Color":"green"}],data_collector_name="datacollector")
+chart = ChartModule([{"Label":"Empleo calificado","Color":"green"},{"Label":"Educados","Color":"red"},{"Label":"No educados","Color":"yellow"}],data_collector_name="datacollector")
 
 server = ModularServer(HumanCapital,
                        [grid,chart],
