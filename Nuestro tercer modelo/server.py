@@ -1,10 +1,11 @@
-##SEGUNDO ARCHIVO
+#Librerías
 from model import HumanCapital
 from mesa.visualization.modules.CanvasGridVisualization import CanvasGrid
 from mesa.visualization.modules import ChartModule
 from mesa.visualization.ModularVisualization import ModularServer
 from mesa.visualization.UserParam import UserSettableParameter
 
+#Asignación de colores
 def definirColor(educarse,empleo_calificado):
     if educarse==False:
         return "yellow"
@@ -15,7 +16,7 @@ def definirColor(educarse,empleo_calificado):
             return "green"
 
 
-#portrayal. dictionary de Python para la definición del diseño de los agentes:
+#Portrayal
 def portrayal(agent):    
     portrayal = {"Shape": "rect",
                  "Filled": "true",
@@ -27,13 +28,14 @@ def portrayal(agent):
                  "w":1.00}
     return portrayal
 
-
+#Definición de lo elementos del server
 grid = CanvasGrid(portrayal,7,7,500,500)
-chart = ChartModule([{"Label":"Empleo calificado","Color":"green"},{"Label":"Educados","Color":"red"},{"Label":"No educados","Color":"yellow"}],data_collector_name="datacollector")
+chart = ChartModule([{"Label":"Empleo calificado","Color":"green"},{"Label":"Educados sin empleo calificado","Color":"red"},{"Label":"No educados","Color":"yellow"}],data_collector_name="datacollector")
 
+#Definición del server
 server = ModularServer(HumanCapital,
                        [grid,chart],
                        "Modelo de Capital Humano",
                        {"N_educados":UserSettableParameter('slider',"Numero de personas educadas",20,1,50,1),
                        "N_buenos_empleo":UserSettableParameter('slider',"Numero de buenos empleos",10,1,50,1),
-                       "colegiatura":UserSettableParameter('slider',"Colegiatura",0.25,0,1,0.005)})
+                       "colegiatura":UserSettableParameter('slider',"Colegiatura",10,0,25,1)})

@@ -1,5 +1,4 @@
-# PRIMER ARCHIVO
-# runServer.py corre el modelo.
+#Archivo para correr el server
 from server import server
 
 server.port = 8521
