@@ -37,5 +37,5 @@ server = ModularServer(HumanCapital,
                        [grid,chart],
                        "Modelo de Capital Humano",
                        {"N_educados":UserSettableParameter('slider',"Numero de personas educadas",20,1,50,1),
-                       "N_buenos_empleo":UserSettableParameter('slider',"Numero de buenos empleos",10,1,50,1),
+                       "N_buenos_empleo":UserSettableParameter('slider',"Numero de empleos calificados",10,1,50,1),
                        "colegiatura":UserSettableParameter('slider',"Colegiatura",10,0,25,1)})
