@@ -5,15 +5,15 @@ from mesa.visualization.modules import ChartModule
 from mesa.visualization.ModularVisualization import ModularServer
 from mesa.visualization.UserParam import UserSettableParameter
 
-#Asignación de colores
+#Asignación de colores en función de la educacióon y del tipo de empleo
 def definirColor(educarse,empleo_calificado):
     if educarse==False:
-        return "yellow"
+        return "yellow" #No educado
     else:
         if empleo_calificado==False:
-            return "red"
+            return "red" #Educado sin trabajo calificado
         else:
-            return "green"
+            return "green" #Educado con trabajo calificado
 
 
 #Portrayal

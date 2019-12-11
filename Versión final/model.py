@@ -21,44 +21,44 @@ class Agente(Agent):
             #A algunos de los educados les toca trabajo calificado
             if self.random.randint (0,49) < self.N_buenos_empleo:
                 self.empleo_calificado = True
-                self.señal = 1
+                self.señal = 1 #Envía señal positiva
             #A algunos no les toca el trabajo calificado
             else:
                 self.empleo_calificado = False
-                self.señal = -1
+                self.señal = -1 #Envía señal negativa
         #A algunos no les toca educarse
         else:
             self.educarse = False
             self.empleo_calificado = False
-            self.señal = 0
+            self.señal = 0 #Envía señal neutra
 
     ##Reglas de comportamiento.
     def step(self):
         #Cálculo de retorno a la educación
         vecinos=self.model.grid.get_neighbors(self.pos,moore=True,include_center=True)
-        indice=0
+        indice=0 #Variable de la suma de las señales
         for v in vecinos:
-            indice += v.señal
+            indice += v.señal #Suma de las señales
         #Decisión de estudiar con base en la indice
-        if indice >= 0 and self.salario >= self.colegiatura:
-            self.educarse=True
-            self.salario -= self.colegiatura
-            if self.random.randint (0,49) < self.N_buenos_empleo:
-                self.empleo_calificado = True
-                self.salario += 2.5
+        if indice >= 0 and self.salario >= self.colegiatura: #Señal positiva y puede pagar la colegiatura
+            self.educarse=True #Decide educarse
+            self.salario -= self.colegiatura #Paga la colegiatura
+            if self.random.randint (0,49) < self.N_buenos_empleo: #Asignación de trabajo calificado
+                self.empleo_calificado = True #Recibe trabajo calificado
+                self.salario += 2.5 #Recibe un salario alto
                 self.color = "green"
-                self.señal = 1
+                self.señal = 1 #Envia señal positiva
             else:
-                self.empleo_calificado = False
-                self.salario += 1
+                self.empleo_calificado = False #No recibe un trabajo calificado
+                self.salario += 1 #Recibe un salario bajo
                 self.color = "red"
-                self.señal = -1
+                self.señal = -1 #Envía una señal negativa
         else:
-            self.educarse = False
-            self.empleo_calificado = False
-            self.salario += 1
+            self.educarse = False #No se educa
+            self.empleo_calificado = False #Por lo tanto, tampoco recibe empleo calificado
+            self.salario += 1 #Recibe un salario bajo
             self.color="yellow"
-            self.señal = 0
+            self.señal = 0 #Envía una señal neutra
 
 #Modelo
 class HumanCapital(Model):
@@ -93,6 +93,7 @@ class HumanCapital(Model):
         self.datacollector.collect(self)
 
 #Métodos del modelo
+
 def contarAgentes(model):
     return model.schedule.get_agent_count()
 
